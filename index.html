@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Future You</title>
+  <style>
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  background: #050509;
+  background: radial-gradient(circle,#21134d,#050509 65%);
+  padding: 20px;
+}
+
+.box {
+  width: 100%;
+  max-width: 650px;
+  padding: 35px;
+  border-radius: 25px;
+  background: #11111b;
+  border: 1px solid #444;
+  box-shadow: 0 0 50px #21134d;
+}
+
+#home h1 {
+  font-size: 70px;
+}
+
+#home span,#career,#score {
+  color: #8b8cff;
+}
+
+#home p,.box>p {
+  color: #a5b4fc;
+  letter-spacing: 3px;
+}
+
+h3 {
+  color: #aaa;
+}
+
+input {
+  width: 100%;
+  padding: 15px;
+  margin: 15px 0;
+  background: #191923;
+  border: 1px solid #555;
+  border-radius: 10px;
+  color: white;
+}
+
+button {
+  padding: 14px 20px;
+  margin: 6px;
+  border: 1px solid #555;
+  border-radius: 12px;
+  background: #171722;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover,.selected {
+  background: linear-gradient(90deg,#6d28d9,#2563eb);
+}
+
+.hide {
+  display: none;
+}
+
+.loader {
+  width: 65px;
+  height: 65px;
+  border: 5px solid #333;
+  border-top-color: #8b8cff;
+  border-radius: 50%;
+  margin: 20px auto;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+#career {
+  font-size: 45px;
+}
+
+.mission {
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 15px;
+  background: #21184a;
+}
+
+@media(max-width:600px) {
+  #home h1 { font-size: 45px; }
+  #career { font-size: 32px; }
+  button { width: 100%; }
+}
+  </style>
+</head>
+<body>
+
+  <div id="home">
+    <p>WELCOME TO THE FUTURE</p>
+    <h1>FUTURE <span>YOU</span></h1>
+    <h3>Your future in tech starts with one choice.</h3>
+    <button onclick="start()">DISCOVER MY FUTURE →</button>
+  </div>
+
+  <div id="quiz" class="box hide">
+    <p>STEP 01</p>
+    <h2>Discover Your Future</h2>
+
+    <input id="name" placeholder="Enter your name">
+
+    <h4>What are you interested in?</h4>
+    <button class="i" onclick="pick('coding',this)">Coding</button>
+    <button class="i" onclick="pick('ai',this)">AI</button>
+    <button class="i" onclick="pick('design',this)">Design</button>
+    <button class="i" onclick="pick('cyber',this)">Cyber Security</button>
+    <button class="i" onclick="pick('gaming',this)">Gaming</button>
+
+    <h4>What’s your level?</h4>
+    <button class="l" onclick="pickLevel('beginner',this)">Beginner</button>
+    <button class="l" onclick="pickLevel('intermediate',this)">Intermediate</button>
+    <button class="l" onclick="pickLevel('advanced',this)">Advanced</button>
+
+    <button onclick="result()">GENERATE MY FUTURE →</button>
+  </div>
+
+  <div id="loading" class="hide">
+    <div class="loader"></div>
+    <h2>Creating your future...</h2>
+  </div>
+
+  <div id="answer" class="box hide">
+    <p>YOUR FUTURE IS WAITING...</p>
+    <h1 id="career"></h1>
+    <p id="info"></p>
+    <h2 id="score"></h2>
+
+    <div class="mission">
+      <b>YOUR 30-DAY MISSION</b>
+      <p id="mission"></p>
+    </div>
+
+    <button onclick="location.reload()">DISCOVER AGAIN</button>
+  </div>
+
+  <script>
+let interest = "";
+let level = "";
+
+function start() {
+  home.classList.add("hide");
+  quiz.classList.remove("hide");
+}
+
+function pick(x,btn) {
+  interest = x;
+  document.querySelectorAll("#quiz button.i")
+    .forEach(b => b.classList.remove("selected"));
+  btn.classList.add("selected");
+}
+
+function pickLevel(x,btn) {
+  level = x;
+  document.querySelectorAll("#quiz button.l")
+    .forEach(b => b.classList.remove("selected"));
+  btn.classList.add("selected");
+}
+
+function result() {
+  let name = document.getElementById("name").value;
+
+  if (!name || !interest || !level) {
+    alert("Please fill all details!");
+    return;
+  }
+
+  quiz.classList.add("hide");
+  loading.classList.remove("hide");
+
+  setTimeout(() => {
+
+    let jobs = {
+      coding:["CODE ARCHITECT","Software Developer","JavaScript + DSA","Build a web app."],
+      ai:["AI EXPLORER","AI / ML Developer","Python + ML","Build an AI project."],
+      design:["DIGITAL CREATOR","UI/UX Designer","Figma + UI","Design an app."],
+      cyber:["CYBER GUARDIAN","Cyber Security Analyst","Networking","Learn cyber security."],
+      gaming:["GAME INNOVATOR","Game Developer","Unity + C#","Create a mini game."]
+    };
+
+    let x = jobs[interest];
+    let scoreValue = level=="beginner" ? 75 : level=="intermediate" ? 84 : 92;
+
+    career.innerText = x[0];
+    info.innerText = x[1] + " | " + x[2];
+    score.innerText = name.toUpperCase() + " - Future Score: " + scoreValue + "%";
+    mission.innerText = x[3];
+
+    loading.classList.add("hide");
+    answer.classList.remove("hide");
+
+  },1500);
+}
+  </script>
+</body>
+</html>
